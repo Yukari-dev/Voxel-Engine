@@ -2,7 +2,9 @@ package com.yukari.game.Core;
 
 import org.lwjgl.opengl.GL;
 
+import com.yukari.game.Render.Mesh;
 import com.yukari.game.Settings.EngineSettings;
+import com.yukari.game.Shaders.Shader;
 
 import org.lwjgl.glfw.*;
 
@@ -53,6 +55,16 @@ public class VoxelEngine {
     }
 
     private void loop() {
+        Shader shader = new Shader("src/main/java/com/yukari/game/Shaders/vertexShader.glsl",
+                "src/main/java/com/yukari/game/Shaders/fragmentShader.glsl");
+
+        float[] vertices = {
+                -0.5f, -0.5f, 0.0f,
+                0.5f, -0.5f, 0.0f,
+                0.0f, 0.5f, 0.0f
+        };
+
+        Mesh mesh = new Mesh(vertices);
 
         while (!glfwWindowShouldClose(window)) {
             Input.Update(window);
@@ -61,6 +73,8 @@ public class VoxelEngine {
                     EngineSettings.backgroundColor.z,
                     1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            shader.bind();
+            mesh.Render();
 
             glfwSwapBuffers(window);
             glfwPollEvents();
