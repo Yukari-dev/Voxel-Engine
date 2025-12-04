@@ -1,6 +1,6 @@
 package com.yukari.game;
 
-import com.yukari.game.VoxelEngine;
+import com.yukari.game.Core.VoxelEngine;
 
 public class Main {
     public static void main(String[] args) {

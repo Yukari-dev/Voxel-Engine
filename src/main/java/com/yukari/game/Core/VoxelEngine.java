@@ -1,6 +1,9 @@
-package com.yukari.game;
+package com.yukari.game.Core;
 
 import org.lwjgl.opengl.GL;
+
+import com.yukari.game.Settings.EngineSettings;
+
 import org.lwjgl.glfw.*;
 
 import static org.lwjgl.glfw.Callbacks.*;
@@ -52,8 +55,16 @@ public class VoxelEngine {
     private void loop() {
 
         while (!glfwWindowShouldClose(window)) {
+            Input.Update(window);
+            glClearColor(EngineSettings.backgroundColor.x,
+                    EngineSettings.backgroundColor.y,
+                    EngineSettings.backgroundColor.z,
+                    1.0f);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
             glfwSwapBuffers(window);
             glfwPollEvents();
+
         }
     }
 
