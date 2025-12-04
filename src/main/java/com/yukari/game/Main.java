@@ -1,9 +1,10 @@
 package com.yukari.game;
 
-public class Main {
+import com.yukari.game.VoxelEngine;
 
+public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello world.");
+        new VoxelEngine().run();
     }
 
 }
