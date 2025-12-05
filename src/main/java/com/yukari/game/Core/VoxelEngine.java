@@ -2,6 +2,7 @@ package com.yukari.game.Core;
 
 import org.lwjgl.opengl.GL;
 
+import com.yukari.game.Input.Input;
 import com.yukari.game.Render.Mesh;
 import com.yukari.game.Settings.EngineSettings;
 import com.yukari.game.Shaders.Shader;
@@ -64,10 +65,10 @@ public class VoxelEngine {
 
         GL.createCapabilities();
         glDisable(GL_CULL_FACE);
-        projection.identity();
 
         glEnable(GL_DEPTH_TEST);
         glViewport(0, 0, EngineSettings.width, EngineSettings.height);
+        glfwSwapInterval(0);
     }
 
     private void loop() {
@@ -76,23 +77,30 @@ public class VoxelEngine {
 
         Mesh mesh = new Mesh();
 
+        Camera camera = new Camera(new Vector3f(0f, 0f, 3f), -90, 0);
+        Input.HideCursor(window);
+
         while (!glfwWindowShouldClose(window)) {
-            Input.Update(window);
+            Time.Update();
+            System.out.printf("DeltaTime: %f, FPS: %d\n", Time.deltaTime, Time.fps);
+            Input.Update(window, camera);
             glClearColor(EngineSettings.backgroundColor.x,
                     EngineSettings.backgroundColor.y,
                     EngineSettings.backgroundColor.z,
                     1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+            camera.Update(window);
+
             shader.bind();
+            Matrix4f model = new Matrix4f().identity();
             Matrix4f view = new Matrix4f().lookAt(
-                    0f, 0f, 5f,
+                    0f, 0f, 3f,
                     0f, 0f, 0f,
                     0f, 1f, 0f);
-            Matrix4f model = new Matrix4f().identity();
 
             shader.SetMatrix("projection", projection);
-            shader.SetMatrix("view", view);
+            shader.SetMatrix("view", camera.getViewMatrix());
             shader.SetMatrix("model", model);
             mesh.Render();
 

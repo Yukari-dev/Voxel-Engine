@@ -14,6 +14,9 @@ public class EngineSettings {
     public static float near_plane = 0.1f;
     public static float far_plane = 100.0f;
 
+    public static float cameraNormalSpeed = 5.0f;
+    public static float cameraSensitivity = 0.1f;
+
     public static Vector3f backgroundColor = new Vector3f(0.2f, 0.3f, 0.3f);
 
 }
