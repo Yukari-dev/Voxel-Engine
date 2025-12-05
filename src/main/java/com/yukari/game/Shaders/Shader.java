@@ -3,9 +3,14 @@ package com.yukari.game.Shaders;
 import static org.lwjgl.opengl.GL20.*;
 
 import java.io.IOException;
+import java.nio.FloatBuffer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+import org.lwjgl.system.MemoryStack;
 
 public class Shader {
     private int programID;
@@ -49,9 +54,27 @@ public class Shader {
         if (status == GL_FALSE) {
             String infoLog = glGetShaderInfoLog(shader, 1024); // Max length of 1024 for info log
             System.err.println("Shader compilation failed: " + infoLog);
-        } else {
-            System.out.println("Shader compiled Successfully");
         }
+
+    }
+
+    public void SetMatrix(String name, Matrix4f matrix) {
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            FloatBuffer buffer = stack.mallocFloat(16);
+            matrix.get(buffer);
+            glUniformMatrix4fv(location(name), false, buffer);
+        }
+    }
+
+    public void SetVector(String name, Vector3f vector) {
+        glUniform3f(location(name), vector.x, vector.y, vector.z);
+    }
+
+    private int location(String name) {
+        int loc = glGetUniformLocation(programID, name);
+        if (loc == -1)
+            System.out.println("Uniform not found: " + name);
+        return loc;
     }
 
     public void bind() {
