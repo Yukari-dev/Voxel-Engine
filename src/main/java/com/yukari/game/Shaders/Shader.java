@@ -2,11 +2,8 @@ package com.yukari.game.Shaders;
 
 import static org.lwjgl.opengl.GL20.*;
 
-import java.io.IOException;
-import java.nio.FloatBuffer;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.*;
+import java.nio.*;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -40,11 +37,28 @@ public class Shader {
     }
 
     private String ExtractSource(String fileName) {
-        Path filePath = Paths.get(fileName);
         try {
-            return Files.readString(filePath);
+            // Load from classpath resources
+            InputStream stream = getClass().getClassLoader().getResourceAsStream(fileName);
+            if (stream == null) {
+                throw new IOException("Shader file not found: " + fileName);
+            }
+
+            // Read the stream
+            BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+            StringBuilder source = new StringBuilder();
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                source.append(line).append("\n");
+            }
+
+            reader.close();
+            System.out.println("Loaded shader: " + fileName);
+            return source.toString();
+
         } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
+            System.err.println("Error reading shader file: " + e.getMessage());
             return "";
         }
     }

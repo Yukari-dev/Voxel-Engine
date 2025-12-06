@@ -3,8 +3,7 @@ package com.yukari.game.Core;
 import static org.joml.Math.*;
 import static org.lwjgl.glfw.GLFW.*;
 
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
+import org.joml.*;
 
 import com.yukari.game.Input.Input;
 import com.yukari.game.Settings.EngineSettings;
@@ -34,20 +33,20 @@ public class Camera {
     }
 
     public void Update(long window) {
-        float velocity = EngineSettings.cameraNormalSpeed * Time.deltaTime;
+        Move(window);
+    }
 
-        if (Input.isKeyPressed(window, GLFW_KEY_W)) {
-            position.add(new Vector3f(front).mul(velocity)); // Create new vector
-        }
-        if (Input.isKeyPressed(window, GLFW_KEY_S)) {
-            position.sub(new Vector3f(front).mul(velocity));
-        }
-        if (Input.isKeyPressed(window, GLFW_KEY_D)) {
-            position.sub(new Vector3f(right).mul(velocity));
-        }
-        if (Input.isKeyPressed(window, GLFW_KEY_A)) {
-            position.add(new Vector3f(right).mul(velocity));
-        }
+    private void Move(long window) {
+        float velocity = EngineSettings.cameraNormalSpeed * Time.deltaTime;
+        Vector3f movement = new Vector3f();
+        Vector3f direction = new Vector3f(Input.getMovementInput(window));
+
+        movement.add(new Vector3f(front).mul(direction.y));
+
+        movement.add(new Vector3f(right).mul(direction.x));
+        movement.add(new Vector3f(worldUp).mul(direction.z));
+
+        position.add(movement.mul(velocity));
     }
 
     public void ProcessMouseMovement(float xOffset, float yOffset) {
