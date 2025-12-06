@@ -2,7 +2,9 @@ package com.yukari.game.Core;
 
 import org.lwjgl.opengl.GL;
 import com.yukari.game.Input.Input;
+import com.yukari.game.Render.Atlas;
 import com.yukari.game.Render.Mesh;
+import com.yukari.game.Render.Texture;
 import com.yukari.game.Settings.EngineSettings;
 import com.yukari.game.Shaders.Shader;
 import org.lwjgl.glfw.*;
@@ -19,6 +21,7 @@ public class VoxelEngine {
     private Shader shader;
     private Mesh mesh;
     private Camera camera;
+    private Atlas atlas;
 
     public void run() {
         init();
@@ -91,7 +94,8 @@ public class VoxelEngine {
 
     private void loadResources() {
         shader = new Shader("Shaders/vertexShader.glsl", "Shaders/fragmentShader.glsl");
-        mesh = new Mesh();
+        atlas = new Atlas("Textures/atlas.png", 16, 16);
+        mesh = new Mesh(atlas.getBlockUVs("Dirt"));
         camera = new Camera(new Vector3f(0f, 0f, 3f), -90, 0);
         Input.HideCursor(window);
     }
@@ -111,6 +115,7 @@ public class VoxelEngine {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         shader.bind();
+        atlas.bind();
         shader.SetMatrix("projection", projection);
         shader.SetMatrix("view", camera.getViewMatrix());
         shader.SetMatrix("model", new Matrix4f().identity());
